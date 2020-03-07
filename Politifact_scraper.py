@@ -9,7 +9,6 @@ import time
 TOTAL_PAGES = 570
 col_index = ['name', 'quote_desc', 'quote', 'link', 'date_line', 'rating', 'sha256']
 local_raw_data = "./politifact_data.csv"
-local_training_data = "./training_data.csv"
 
 
 def get_politifacts_page(page_num):
@@ -48,7 +47,7 @@ def update_politifact_data_set(end_page=1, start_page=1, data_set=None, wait_tim
     if end_page > TOTAL_PAGES:
         end_page = TOTAL_PAGES
 
-    for page_number in tqdm(range(end_page, start_page-1, -1)):
+    for page_number in tqdm(range(end_page, start_page - 1, -1)):
         data_set = get_politifacts_page(page_num=page_number).append(data_set, ignore_index=True)
         # Delay between page requests. Don't be rude and slam their server.
         time.sleep(wait_time)
