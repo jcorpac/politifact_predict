@@ -7,27 +7,28 @@ data = pd.read_csv(local_raw_data, sep='|')
 
 
 def preprocess_data(raw_data):
+    processed_data = raw_data[["quote", "rating", "sha256"]]
+
     # Convert SHA256 value from hex string to integer.
-    raw_data.sha256 = raw_data.sha256.apply(int, base=16)
-    politifact_data = raw_data[["quote", "rating", "sha256"]]
+    processed_data.sha256 = processed_data.sha256.apply(int, base=16)
     # Rows with Flip-related labels are not relevant to the model.
-    politifact_data = politifact_data[~politifact_data.rating.isin(["full-flop", "half-flip", "no-flip"])]
+    processed_data = processed_data[~processed_data.rating.isin(["full-flop", "half-flip", "no-flip"])]
     # Cast ratings as strings to avoid errors when changing case
-    politifact_data.rating = politifact_data.rating.astype(str)
+    processed_data.rating = processed_data.rating.astype(str)
     # Remove case from the rating to merge False/false and True/true ratings
-    politifact_data.rating = politifact_data.rating.str.lower()
+    processed_data.rating = processed_data.rating.str.lower()
     # If the last digit in the converted SHA value is 0-7, label it for training data
     # If the last digit is 8 or 9, label it for the test set
-    politifact_data["is_test"] = politifact_data.sha256 % 10 >= 8
+    processed_data["is_test"] = processed_data.sha256 % 10 >= 8
     # Once we have the split, we don't need the SHA value anymore
-    politifact_data.drop(columns="sha256", inplace=True)
+    processed_data.drop(columns="sha256", inplace=True)
     # Some duplicate quotes remain, remove them.
-    politifact_data.drop_duplicates(subset="quote", inplace=True)
+    processed_data.drop_duplicates(subset="quote", inplace=True)
     # Remove connecting phrases from quotes unlikely to appear when model is in use.
     connecting_phrases = ["Says ", "Say ", "Tweeted ", "Quoted ", "Quotes ", "Says of "]
     for phrase in connecting_phrases:
-        politifact_data.quote = politifact_data.quote.str.replace(phrase, "")
-    return politifact_data
+        processed_data.quote = processed_data.quote.str.replace(phrase, "")
+    return processed_data
 
 
 politifact_data = preprocess_data(data)
