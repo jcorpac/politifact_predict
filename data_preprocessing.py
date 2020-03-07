@@ -3,14 +3,13 @@ import pandas as pd
 local_raw_data = "./politifact_data.csv"
 local_training_data = "./training_data.csv"
 
-data = pd.read_csv(local_raw_data, sep='|')
-
 
 def preprocess_data(raw_data):
+    # Convert SHA256 value from hex string to integer.
+    raw_data.sha256 = raw_data.sha256.apply(int, base=16)
+
     processed_data = raw_data[["quote", "rating", "sha256"]]
 
-    # Convert SHA256 value from hex string to integer.
-    processed_data.sha256 = processed_data.sha256.apply(int, base=16)
     # Rows with Flip-related labels are not relevant to the model.
     processed_data = processed_data[~processed_data.rating.isin(["full-flop", "half-flip", "no-flip"])]
     # Cast ratings as strings to avoid errors when changing case
@@ -31,5 +30,6 @@ def preprocess_data(raw_data):
     return processed_data
 
 
+data = pd.read_csv(local_raw_data, sep='|')
 politifact_data = preprocess_data(data)
 politifact_data.to_csv(local_training_data, header=True, index=False, sep='|')
