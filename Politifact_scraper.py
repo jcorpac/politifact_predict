@@ -6,7 +6,7 @@ import requests
 import hashlib
 import time
 
-TOTAL_PAGES = 570
+TOTAL_PAGES = 573
 col_index = ['name', 'quote_desc', 'quote', 'link', 'date_line', 'rating', 'sha256']
 local_raw_data = "./politifact_data.csv"
 
