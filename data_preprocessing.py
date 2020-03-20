@@ -30,6 +30,7 @@ def preprocess_data(raw_data):
     return processed_data
 
 
-data = pd.read_csv(local_raw_data, sep='|')
-politifact_data = preprocess_data(data)
-politifact_data.to_csv(local_training_data, header=True, index=False, sep='|')
+if __name__ == "__main__":
+    data = pd.read_csv(local_raw_data, sep='|')
+    politifact_data = preprocess_data(data)
+    politifact_data.to_csv(local_training_data, header=True, index=False, sep='|')

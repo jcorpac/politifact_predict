@@ -58,11 +58,12 @@ def update_politifact_data_set(end_page=1, start_page=1, data_set=None, wait_tim
     return data_set
 
 
-if path.exists(local_raw_data):
-    data = pd.read_csv(local_raw_data, sep='|')
-else:
-    data = None
+if __name__ == "__main__":
+    if path.exists(local_raw_data):
+        data = pd.read_csv(local_raw_data, sep='|')
+    else:
+        data = None
 
-data = update_politifact_data_set(data_set=data)
+    data = update_politifact_data_set(5, data_set=data)
 
-data.to_csv(local_raw_data, header=True, index=False, sep='|')
+    data.to_csv(local_raw_data, header=True, index=False, sep='|')
